@@ -1,1 +1,1 @@
-from .agent import quiz_agent_function
+from .agent import quiz_agent
