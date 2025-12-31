@@ -30,7 +30,7 @@ def web_page_content_function(subtopic: str) -> SequentialAgent:
     You are a specialist in learning retention and flashcard design. Create 5 high-quality flashcards based *strictly* on the provided webpage content for the subtopic: "{subtopic}".
 
     Source Content:
-    {{webpage_content}}
+    {{{web_page_agent.output_key}}}
 
     Guidelines for Flashcards:
     1.  **Focus**: Each card should test a single distinct concept or fact from the text.
@@ -44,7 +44,7 @@ def web_page_content_function(subtopic: str) -> SequentialAgent:
     You are an assessment expert. Create a 5-question Multiple Choice Quiz (MCQ) to test the user's understanding of the subtopic "{subtopic}", based *only* on the provided content.
 
     Source Content:
-    {{webpage_content}}
+    {{{web_page_agent.output_key}}}
 
     Guidelines:
     1.  **Difficulty**: Mix of recall (easy) and conceptual application (medium).
@@ -63,7 +63,7 @@ def web_page_content_function(subtopic: str) -> SequentialAgent:
 
     **Source Material:**
     Base your script *strictly* on the following content:
-    {{webpage_content}}
+    {{{web_page_agent.output_key}}}
 
     **The Hosts:**
     1.  **Alice (The Host):** Energetic, curious, and represents the audience. She asks the "dumb questions" and drives the conversation forward.

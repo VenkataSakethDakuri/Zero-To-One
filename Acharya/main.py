@@ -1,6 +1,8 @@
 import asyncio
 import os
 import sys
+from pathlib import Path
+import shutil
 
 from dotenv import load_dotenv
 from google.adk.sessions import DatabaseSessionService
@@ -158,21 +160,35 @@ async def main_async():
             session_id=SESSION_ID
         )
         
-        print(50*"-")
-        print(session.state["flashcards"])
-        print(50*"-")
-        print(session.state["quiz"])
-        print(50*"-")
-        print(session.state["webpage_content"])
-        print(50*"-")
-        print(session.state["podcast_content"])
-        print(50*"-")
+        print(100*"-")
+        for i in range(1, session.state["subtopics"]["count"] + 1):
+            print(session.state[f"flashcards_{i}"])
+        print(100*"-")
+        for i in range(1, session.state["subtopics"]["count"] + 1):
+            print(session.state[f"quiz_{i}"])
+        print(100*"-")
+        for i in range(1, session.state["subtopics"]["count"] + 1):
+            print(session.state[f"webpage_content_{i}"])
+        print(100*"-")
+        for i in range(1, session.state["subtopics"]["count"] + 1):
+            print(session.state[f"podcast_content_{i}"])
+        print(100*"-")
 
         await session_service.delete_session(
             app_name=APP_NAME,
             user_id=USER_ID,
             session_id=SESSION_ID,
         )   
+
+        # remove all cache 
+        root = "C:/Users/DELL/OneDrive/Desktop/Project/Hackathons/Acharya"
+        root = Path(root)
+
+        for d in root.rglob("__pycache__"):
+            if d.is_dir():
+                shutil.rmtree(d)   # deletes directory + contents
+
+        print("Removed all __pycache__ directories.")
         
         print("Session data deleted.")
 

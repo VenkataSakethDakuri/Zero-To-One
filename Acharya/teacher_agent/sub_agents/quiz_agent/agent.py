@@ -13,8 +13,8 @@ class Quiz(BaseModel):
 
 class QuizList(BaseModel):
     quiz: List[Quiz] = Field(..., description="A list of quizzes",
-    min_length = 5,
-    max_length = 5,
+    min_length = 1,
+    max_length = 1,
     )
 
 count = 0
@@ -32,7 +32,7 @@ def quiz_agent_function() -> Agent:
     model = "gemini-2.5-flash-lite",
     description = "Generates a quiz for a given topic",
     tools = [],
-    output_key = "quiz",
+    output_key = f"quiz_{count}",
     output_schema = QuizList,
     after_agent_callback = after_agent_callback
 )

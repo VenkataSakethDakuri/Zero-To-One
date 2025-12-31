@@ -17,7 +17,10 @@ async def after_agent_callback(callback_context: CallbackContext):
     await asyncio.sleep(60)
     client = genai.Client()
 
-    prompt = callback_context.session.state["podcast_content"]
+    global count
+    count += 1
+
+    prompt = callback_context.session.state[f"podcast_content_{count}"]
 
     formatted_prompt = ""
     for turn in prompt['dialogue']:
@@ -54,9 +57,6 @@ async def after_agent_callback(callback_context: CallbackContext):
     )
 
     data = response.candidates[0].content.parts[0].inline_data.data
-
-    global count
-    count += 1
 
     file_name = f"out_{count}.wav"
     wav_file_path=rf"C:\Users\DELL\OneDrive\Desktop\Project\Hackathons\Acharya\{file_name}"

@@ -36,7 +36,7 @@ def podcast_agent_function() -> Agent:
         model = "gemini-2.5-flash-lite",
         description="Generates podcast content for a given topic",
         tools=[],
-        output_key="podcast_content",
+        output_key=f"podcast_content_{count}",
         output_schema=PodcastScript,
         after_agent_callback=after_agent_callback,
     )

@@ -17,7 +17,7 @@ def web_page_agent_function() -> Agent:
         model = "gemini-2.5-flash-lite",
         description = "Generates web page content for a given topic",
         tools = [],
-        output_key = "webpage_content",
+        output_key = f"webpage_content_{count}",
         after_agent_callback = after_agent_callback
     )
 

@@ -14,6 +14,7 @@ def flashcard_quiz_podcast_agent_function() -> ParallelAgent:
     quiz_agent = quiz_agent_function()
     podcast_agent = podcast_agent_function()
 
+    # Parallel Agent preserves the order of results inherently.
     flashcard_quiz_podcast_agent = ParallelAgent(    
         name=f"flashcard_quiz_podcast_agent_{count}",
         sub_agents=[

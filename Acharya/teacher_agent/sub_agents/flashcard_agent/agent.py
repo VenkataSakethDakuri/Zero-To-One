@@ -30,7 +30,7 @@ def flashcard_agent_function() -> Agent:
     model = "gemini-2.5-flash-lite",
     description = "Generates flashcards for a given topic",
     tools = [],
-    output_key = "flashcards",
+    output_key = f"flashcards_{count}",
     output_schema = FlashcardList,
     after_agent_callback = after_agent_callback
 
