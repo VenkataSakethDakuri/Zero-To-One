@@ -54,6 +54,7 @@ For each subtopic, a specific sequence of agents is executed:
 
 ### Workflow Diagram
 
+```mermaid
 flowchart TD
     User([User Input]) -->|Topic| Main["Main Process"]
     Main -->|Invokes| TG["Topic Generator Agent"]
@@ -80,7 +81,7 @@ flowchart TD
     Pipe1 -.->|Output| Final["Final Session State"]
     Pipe2 -.->|Output| Final
     PipeN -.->|Output| Final
-
+```
 
 
 ## 🛠️ Agents Description
