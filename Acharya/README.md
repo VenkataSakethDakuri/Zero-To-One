@@ -60,12 +60,22 @@ flowchart TD
     Main -->|Invokes| TG["Topic Generator Agent"]
     TG -->|Generates List of Subtopics| FA["Factory Agent<br>Parallel Orchestrator"]
 
-    subgraph P["Parallel Execution (One per Subtopic)"]
+    subgraph P["Parallel Execution"]
         FA -->|Subtopic 1| Pipe1["Pipeline 1"]
         FA -->|Subtopic 2| Pipe2["Pipeline 2"]
         FA -->|Subtopic ...| PipeN["Pipeline N"]
     end
 
+
+    Pipe1 -.->|Output| Final["Final Session State"]
+    Pipe2 -.->|Output| Final
+    PipeN -.->|Output| Final
+```
+
+### Subtopic Pipeline Detail
+
+```mermaid
+flowchart TD
     subgraph S["Single Subtopic Pipeline"]
         direction TB
         Input("Subtopic") --> WA["Web Page Agent"]
@@ -77,10 +87,6 @@ flowchart TD
             PA --> PodA["Podcast Agent"]
         end
     end
-
-    Pipe1 -.->|Output| Final["Final Session State"]
-    Pipe2 -.->|Output| Final
-    PipeN -.->|Output| Final
 ```
 
 
@@ -118,3 +124,10 @@ python main.py
 ```
 
 3.  Enter your desired topic when prompted.
+
+## Contributing
+Feel free to raise an issue or submit a pull request if you find any mistakes or have suggestions for improvement. Your contributions are welcome and appreciated!
+
+---
+
+Happy Coding!
