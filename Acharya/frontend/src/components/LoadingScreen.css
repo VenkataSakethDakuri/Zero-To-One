@@ -1,0 +1,148 @@
+.loading-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.loading-content {
+    text-align: center;
+    max-width: 400px;
+}
+
+/* Logo */
+.loading-logo {
+    margin-bottom: 1.5rem;
+}
+
+.logo-pulse {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    background: var(--accent-gradient);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 20px var(--accent-glow);
+        transform: scale(1);
+    }
+
+    50% {
+        box-shadow: 0 0 50px var(--accent-glow);
+        transform: scale(1.05);
+    }
+}
+
+.logo-pulse svg {
+    width: 40px;
+    height: 40px;
+    color: white;
+}
+
+/* Title */
+.loading-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
+.loading-message {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+}
+
+/* Progress */
+.loading-progress {
+    margin-bottom: 2.5rem;
+}
+
+.progress-track {
+    height: 4px;
+    background: var(--bg-tertiary);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-shimmer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg,
+            transparent,
+            var(--accent-primary),
+            var(--accent-secondary),
+            transparent);
+    animation: shimmer-slide 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer-slide {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Steps */
+.loading-steps {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0.3;
+    transition: all var(--transition-normal);
+}
+
+.step.active {
+    opacity: 1;
+}
+
+.step-icon {
+    font-size: 1.5rem;
+}
+
+.step-text {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.step.active .step-text {
+    color: var(--text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .loading-steps {
+        gap: 1rem;
+    }
+
+    .step-icon {
+        font-size: 1.25rem;
+    }
+
+    .step-text {
+        font-size: 0.65rem;
+    }
+}
