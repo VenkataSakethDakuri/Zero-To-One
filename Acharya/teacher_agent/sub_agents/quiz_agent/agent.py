@@ -21,7 +21,7 @@ count = 0
 
 
 async def after_agent_callback(callback_context: CallbackContext):
-    await asyncio.sleep(60)
+    await asyncio.sleep(45)
 
 def quiz_agent_function() -> Agent:
     global count

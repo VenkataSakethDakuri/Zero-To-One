@@ -81,7 +81,7 @@ async def generate_audio_with_retry(client, formatted_prompt, max_retries=3, del
 
 async def after_agent_callback(callback_context: CallbackContext):
     """Generate podcast audio from dialogue after agent completes."""
-    await asyncio.sleep(30) 
+    await asyncio.sleep(45) 
     
     try:
         client = genai.Client()
