@@ -24,9 +24,10 @@ teacher_agent/
     ├── factory_agent/         # Orchestrates parallel execution for all subtopics
     ├── flashcard_agent/       # Generates flashcards from web page content
     ├── flashcard_quiz_podcast_agent/ # Parallel agent wrapper for auxiliary content
-    ├── podcast_agent/         # Generates conversational educationalpodcasts
+    ├── image_agent/           # Searches and downloads relevant images using SerpAPI
+    ├── podcast_agent/         # Generates conversational educational podcasts
     ├── quiz_agent/            # Generates multiple-choice quizzes
-    ├── topic_generator_agent/ # breaks the main topic into subtopics
+    ├── topic_generator_agent/ # Breaks the main topic into subtopics
     ├── web_page_agent/        # Writes the core educational text
     └── web_page_content_function/ # Helper function to build the agent pipeline
 ```
@@ -87,6 +88,7 @@ flowchart TD
             PA --> FA_Sub["Flashcard Agent"]
             PA --> QA["Quiz Agent"]
             PA --> PodA["Podcast Agent"]
+            PA --> IA["Image Agent"]
         end
     end
 ```
