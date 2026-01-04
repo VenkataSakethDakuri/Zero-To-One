@@ -13,6 +13,14 @@ Acharya is an advanced, multi-agent AI system designed to act as a comprehensive
     -   **Images**: Relevant visual aids sourced and downloaded automatically.
 -   **Parallel Execution**: Utilizes parallel agents to generate content for multiple subtopics simultaneously, significantly reducing wait times.
 
+## 🎥 Demo Video
+
+Watch Acharya in action:
+
+https://github.com/user-attachments/assets/output_fast.mp4
+
+> **Note**: The video demonstrates the complete workflow from topic input to content generation across all formats.
+
 ## 📂 Folder Structure
 
 The core logic resides in the `teacher_agent` directory. Below is the structure of the agent system:
