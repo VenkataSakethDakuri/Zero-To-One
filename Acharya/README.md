@@ -205,6 +205,8 @@ For a better user experience with real-time progress updates and visual content 
     - Content fills in as each agent completes
     - Progress updates shown in real-time
 
+> **Note:** If you encounter timeout errors or incomplete content generation, this may be caused by aggressive rate limiting delays in the agent pipeline. As an alternative, try using the terminal version (`python main.py`) which provides better visibility into the generation process, or wait a few minutes and retry your request.
+
 ## Contributing
 Feel free to raise an issue or submit a pull request if you find any mistakes or have suggestions for improvement. Your contributions are welcome and appreciated!
 
