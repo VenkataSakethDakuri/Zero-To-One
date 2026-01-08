@@ -11,10 +11,7 @@ def create_phone_number(assistant_id: str):
         "Authorization": f"Bearer {os.getenv('VAPI_API_KEY')}"
     }
 
-    payload = {
-        
-        "TwilioPhoneNumber":
-        {
+    payload = {    
             "provider": "twilio",
             "name": "Twilio number",
             "number": os.getenv('TWILIO_PHONE_NUMBER'),
@@ -23,7 +20,6 @@ def create_phone_number(assistant_id: str):
             "twilioApiSecret": os.getenv('TWILIO_API_SECRET'),
             "twilioApiKey": os.getenv('TWILIO_API_KEY'),
             "assistantId": assistant_id
-        }
     }
 
     response = requests.post(url, headers=headers, json=payload)
