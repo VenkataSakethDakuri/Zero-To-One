@@ -19,109 +19,123 @@ db_config = {"host": "localhost", "database": "dhanamitra", "user": os.getenv("P
 @app.post("/vapi-webhook")
 async def webhook(request: Request):
     data = await request.json()
+    
+    connection = None
 
-    if data["message"]["type"] == 'end-of-call-report':
-        connection = None
+    try: 
         connection = psycopg2.connect(**db_config)
         cursor = connection.cursor()
         
-        call = data["message"]
+        if data["message"]["type"] == 'end-of-call-report':        
+            call = data["message"]
 
-        phone_number = call["customer"]["number"]
-        vapi_call_id = call["call"]["id"]
-        recording_url = call.get("recordingUrl")
-        ended_reason = call.get("endedReason", "unknown")
-        
-        # Extract Analysis
-        analysis = call.get("analysis", {})
-        summary = analysis.get("summary", "No summary available")
-
-        structured_data = analysis.get("structuredData", {})
-        ai_outcome = structured_data.get("call_outcome")
-        ai_sentiment = structured_data.get("customer_sentiment", "Neutral")
-
-        #placeholder
-        final_outcome = "FAILED" 
-        new_customer_status = "PENDING" 
-        next_call_time = datetime.now() + timedelta(hours=4)
-
-        if ended_reason == 'customer-did-not-answer':
-            final_outcome = 'NO_ANSWER'
-            new_customer_status = 'PENDING'
-            next_call_time = datetime.now() + timedelta(hours=4)
+            phone_number = call["customer"]["number"]
+            vapi_call_id = call["call"]["id"]
+            recording_url = call.get("recordingUrl")
+            ended_reason = call.get("endedReason", "unknown")
             
-        elif ended_reason == 'busy':
-            final_outcome = 'BUSY'
-            new_customer_status = 'PENDING'
-            next_call_time = datetime.now() + timedelta(hours=4)
-        
-        elif ended_reason == 'voicemail':
-            final_outcome = 'VOICEMAIL'
-            new_customer_status = 'PENDING'
-            next_call_time = datetime.now() + timedelta(hours=4)
-        
-        elif ai_outcome:
-            final_outcome = ai_outcome
+            # Extract Analysis
+            analysis = call.get("analysis", {})
+            summary = analysis.get("summary", "No summary available")
 
-            if ai_outcome == 'PAYMENT_COMPLETED':
-                final_outcome = 'PAYMENT_COMPLETED'
-                new_customer_status = 'COMPLETED'
-                next_call_time = None
-            
-            elif ai_outcome in ['CALLBACK_REQUESTED', 'PROMISED_TO_PAY']:
-                final_outcome = 'CALLBACK_REQUESTED'
+            structured_data = analysis.get("structuredData", {})
+            ai_outcome = structured_data.get("call_outcome")
+            ai_sentiment = structured_data.get("customer_sentiment", "Neutral")
+
+            #placeholder
+            final_outcome = "FAILED" 
+            new_customer_status = "PENDING" 
+            next_call_time = datetime.now() + timedelta(hours=4)
+
+            if ended_reason == 'customer-did-not-answer':
+                final_outcome = 'NO_ANSWER'
+                new_customer_status = 'PENDING'
+                next_call_time = datetime.now() + timedelta(hours=4)
+                
+            elif ended_reason == 'busy':
+                final_outcome = 'BUSY'
                 new_customer_status = 'PENDING'
                 next_call_time = datetime.now() + timedelta(hours=4)
             
-            elif ai_outcome == 'FAILED':
-                final_outcome = 'FAILED'
+            elif ended_reason == 'voicemail':
+                final_outcome = 'VOICEMAIL'
                 new_customer_status = 'PENDING'
-                next_call_time = None
+                next_call_time = datetime.now() + timedelta(hours=4)
             
-            elif ai_outcome == 'WRONG_NUMBER':
-                final_outcome = 'WRONG_NUMBER'
-                new_customer_status = 'DO_NOT_CALL'
-                next_call_time = None
+            elif ai_outcome:
+                final_outcome = ai_outcome
 
-        # Get Customer ID
-        cursor.execute("SELECT customer_id, outstanding_balance, due_date FROM customers WHERE phone_number = %s", (phone_number,))
-        result = cursor.fetchone()
+                if ai_outcome == 'PAYMENT_COMPLETED':
+                    final_outcome = 'PAYMENT_COMPLETED'
+                    new_customer_status = 'RESOLVED'
+                    next_call_time = None
+                
+                elif ai_outcome in ['CALLBACK_REQUESTED', 'PROMISED_TO_PAY']:
+                    final_outcome = 'CALLBACK_REQUESTED'
+                    new_customer_status = 'PENDING'
+                    next_call_time = datetime.now() + timedelta(hours=4)
+                
+                elif ai_outcome == 'FAILED':
+                    final_outcome = 'FAILED'
+                    new_customer_status = 'PENDING'
+                    next_call_time = None
+                
+                elif ai_outcome == 'WRONG_NUMBER':
+                    final_outcome = 'WRONG_NUMBER'
+                    new_customer_status = 'DO_NOT_CALL'
+                    next_call_time = None
 
-        if result:
-            customer_id = result[0]
-            outstanding_balance = Decimal(result[1])
-            due_date = result[2]
-        else:
-            customer_id = None
-            outstanding_balance = None
-            due_date = None
+            # Get Customer ID
+            cursor.execute("SELECT customer_id, outstanding_balance, due_date FROM customers WHERE phone_number = %s", (phone_number,))
+            result = cursor.fetchone()
 
-        log_query = """
-                    INSERT INTO call_logs 
-                    (customer_id, vapi_call_id, call_outcome, call_summary, recording_url, customer_sentiment)
-                    VALUES (%s, %s, %s, %s, %s, %s)
-                """
-        cursor.execute(log_query, (customer_id, vapi_call_id, final_outcome, summary, recording_url, ai_sentiment))
+            if result:
+                customer_id = result[0]
+                outstanding_balance = Decimal(result[1])
+                due_date = result[2]
+            else:
+                customer_id = None
+                outstanding_balance = None
+                due_date = None
 
-        update_query = """
-                        UPDATE customers 
-                        SET call_status = %s, next_call_scheduled_at = %s 
-                        WHERE customer_id = %s
+            log_query = """
+                        INSERT INTO call_logs 
+                        (customer_id, vapi_call_id, call_outcome, call_summary, recording_url, customer_sentiment)
+                        VALUES (%s, %s, %s, %s, %s, %s)
                     """
-        cursor.execute(update_query, (new_customer_status, next_call_time, customer_id))
+            cursor.execute(log_query, (customer_id, vapi_call_id, final_outcome, summary, recording_url, ai_sentiment))
 
-        assistant_id = call["call"]["assistantId"]
-        customer_name = call["customer"]["name"]
-        customer_email = call["customer"]["email"]
-        phone_number_id = os.getenv('VAPI_PHONE_NUMBER_ID')
+            update_query = """
+                            UPDATE customers 
+                            SET call_status = %s, next_call_scheduled_at = %s 
+                            WHERE customer_id = %s
+                        """
+            cursor.execute(update_query, (new_customer_status, next_call_time, customer_id))
 
-        if next_call_time != None:
-            make_call(phone_number, customer_name, customer_email, assistant_id, next_call_time, phone_number_id, customer_id, outstanding_balance, due_date)
+            connection.commit()
 
-        connection.commit()
+            assistant_id = call["call"]["assistantId"]
+            customer_name = call["customer"]["name"]
+            customer_email = call["customer"]["email"]
+            phone_number_id = os.getenv('VAPI_PHONE_NUMBER_ID')
 
-        cursor.close()
-        connection.close()
+            if next_call_time is not None:
+                make_call(phone_number, customer_name, customer_email, assistant_id, next_call_time, phone_number_id, customer_id, outstanding_balance, due_date)
+
+            connection.commit()
+
+            cursor.close()
+            connection.close()
+        
+    except Exception as e:
+        print(f"Error: {e}")
+
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+    
+    return {"status": "success"}
 
 
 
