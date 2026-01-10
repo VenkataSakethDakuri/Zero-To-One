@@ -12,6 +12,9 @@ db_config = {"host": "localhost", "database": "dhanamitra", "user": os.getenv("P
 
 def timestamp_to_ISO(timestamp: datetime):
     ist = pytz.timezone('Asia/Kolkata')
+    # Make timezone-aware if naive
+    if timestamp.tzinfo is None:
+        timestamp = ist.localize(timestamp)
     iso_time = timestamp.astimezone(ist).isoformat()
     return iso_time
 
@@ -29,8 +32,9 @@ def get_past_history(customer_id: int):
     cursor.execute(query, (customer_id,))
     logs = cursor.fetchall()
 
-    connection.close()
     cursor.close()
+    connection.close()
+
     
     if not logs:
         return "No previous calls."
