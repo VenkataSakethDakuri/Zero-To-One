@@ -21,7 +21,7 @@ def create_voice_agent(tool_ids: list):
         "model" : {
 
             "provider": "google",
-            "model": "gemini-2.5-flash-lite",
+            "model": "gemini-2.5-flash",
             "messages": [
 
                 # {
@@ -42,13 +42,13 @@ def create_voice_agent(tool_ids: list):
         "voice": {
 
             "provider": "deepgram",
-            "voiceId": "pandora"
+            "voiceId": "asteria"
         },
         "transcriber": {
 
             "provider": "deepgram",
             "model": "nova-2-phonecall",
-            "language": "en-IN"
+            "language": "en"
         },
         "firstMessageInterruptionsEnabled": True,
         "voicemailDetection": {
@@ -60,8 +60,8 @@ def create_voice_agent(tool_ids: list):
 
         {
             "provider": "google",
-            "apiKey": os.getenv("GOOGLE_API_KEY"),
-            "name": "GOOGLE_API_KEY"
+            "apiKey": os.getenv("GEMINI_API_KEY"),
+            "name": "GEMINI_API_KEY"
         },
 
         {
@@ -87,12 +87,26 @@ def create_voice_agent(tool_ids: list):
                     "type": "object",
                     "properties": {
                         "call_outcome": {
-                            "type": "string",
-                            "enum": ["PAYMENT_COMPLETED", "CALLBACK_REQUESTED", "PROMISED_TO_PAY", "VOICEMAIL", "NO_ANSWER", "BUSY", "FAILED", "WRONG_NUMBER"]
+                            "type": "object",
+                            "properties": {
+                                "result": {
+                                    "type": "string",
+                                    "enum": ["PAYMENT_COMPLETED", "CALLBACK_REQUESTED", "PROMISED_TO_PAY", "VOICEMAIL", "NO_ANSWER", "BUSY", "FAILED", "WRONG_NUMBER"],
+                                    "description": "Overall call outcome"
+                                }
+                            },
+                            "required": ["result"]
                         },
                         "customer_sentiment": {
-                            "type": "string",
-                            "enum": ["Positive", "Neutral", "Negative"]
+                            "type": "object",
+                            "properties": {
+                                "sentiment": {
+                                    "type": "string",
+                                    "enum": ["Positive", "Neutral", "Negative"],
+                                    "description": "Customer sentiment during the call"
+                                }
+                            },
+                            "required": ["sentiment"]
                         }
                     },
                     "required": ["call_outcome", "customer_sentiment"]
@@ -107,6 +121,8 @@ def create_voice_agent(tool_ids: list):
         print("Voice agent created successfully")
     else:
         print("Failed to create voice agent")
+        print(response.text)
+        print(response.status_code)
         return None
     
     return response.json()
