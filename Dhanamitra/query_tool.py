@@ -14,6 +14,7 @@ def Query_tool(fileIds: list[str]):
 
     payload = {
         "type": "query",
+        "function": {    "name": "loan_details_search",    "description": "Search loan terms and conditions for customer inquiries"  },
         "messages": [
             {
                 "type": "request-start",
@@ -34,11 +35,11 @@ def Query_tool(fileIds: list[str]):
 
         "knowledgeBases": [
             {
-                "name": "Loan terms and conditions",
+                "name": "Loan_terms_and_conditions",
                 "provider": "google",
                 "description": "This collection outlines the operational and legal guidelines for loan recovery.",
                 "fileIds": fileIds,
-                "model": "gemini-2.5-flash-lite"
+                "model": "gemini-2.5-flash"
             }
         ]
     }
