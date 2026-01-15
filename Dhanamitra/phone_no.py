@@ -27,7 +27,8 @@ def create_phone_number(assistant_id: str):
     if response.status_code == 201:
         print("Phone number created successfully")
     else:
-        print("Failed to create phone number")
+        print(f"Failed to create phone number: {response.status_code}")
+        print(response.text)
         return None
     
     return response.json()
