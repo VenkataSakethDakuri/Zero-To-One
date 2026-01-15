@@ -10,14 +10,34 @@ load_dotenv()
 
 db_config = {"host": "localhost", "database": "dhanamitra", "user": os.getenv("POSTGRESQL_USER"), "password": os.getenv("POSTGRESQL_PASSWORD")}
 
+# def timestamp_to_ISO(timestamp: datetime):
+#     ist = pytz.timezone('Asia/Kolkata')
+#     # Make timezone-aware if naive
+#     if timestamp.tzinfo is None:
+#         timestamp = ist.localize(timestamp)
+#     iso_time = timestamp.astimezone(ist).isoformat()
+
+#     return iso_time
+
+
 def timestamp_to_ISO(timestamp: datetime):
     ist = pytz.timezone('Asia/Kolkata')
-    # Make timezone-aware if naive
+    
+    # 1. Make input timezone-aware (IST) if it is naive
     if timestamp.tzinfo is None:
         timestamp = ist.localize(timestamp)
-    iso_time = timestamp.astimezone(ist).isoformat()
-    return iso_time
+    else:
+        timestamp = timestamp.astimezone(ist)
 
+    # 2. Get current time in IST (Timezone Aware)
+    now = datetime.now(ist)
+
+    # 3. Compare datetime objects (not strings)
+    if timestamp <= now:
+        timestamp = now + timedelta(seconds=10)
+    
+    # 4. Convert to ISO string at the very end
+    return timestamp.isoformat()
 
 def get_past_history(customer_id: int):
     connection = psycopg2.connect(**db_config)
@@ -58,8 +78,11 @@ def make_call(customer_number: str, customer_name: str, customer_email: str, ass
         "Authorization": f"Bearer {os.getenv('VAPI_API_KEY')}"
     }
 
+    print(timestamp_to_ISO(next_call_time))
+
+    
     payload = {
-        "name": "Loan recovery call",
+        "name": "Loan_recovery_call",
         "customer": {
                 "number": customer_number,
                 "name": customer_name,
@@ -69,7 +92,7 @@ def make_call(customer_number: str, customer_name: str, customer_email: str, ass
         "assistantId": assistant_id,
         "schedulePlan": {
             "earliestAt": timestamp_to_ISO(next_call_time),
-            "latestAt": timestamp_to_ISO(next_call_time + timedelta(seconds=30))
+            "latestAt": timestamp_to_ISO(next_call_time + timedelta(seconds=600))
         },
         
         "phoneNumberId": phone_number_id,
@@ -77,7 +100,10 @@ def make_call(customer_number: str, customer_name: str, customer_email: str, ass
         "assistantOverrides": {
             "firstMessage": f"Hello! am I speaking to {customer_name}?",
 
+
             "model": {
+                "provider": "google",
+                "model": "gemini-2.5-flash",
                 "messages": [
                     {
                         "role": "system",
@@ -104,7 +130,8 @@ def make_call(customer_number: str, customer_name: str, customer_email: str, ass
     if response.status_code == 201:
         print("Call scheduled successfully")
     else:
-        print("Failed to schedule call")
+        print(f"Failed to schedule call: {response.status_code}")
+        print(response.text)
         return None
     
     return response.json()
