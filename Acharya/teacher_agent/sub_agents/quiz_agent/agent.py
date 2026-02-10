@@ -29,7 +29,7 @@ def quiz_agent_function() -> Agent:
 
     quiz_agent = Agent(
     name = f"quiz_agent_{count}",
-    model = "gemini-2.5-flash-lite",
+    model = "gemini-3",
     description = "Generates a quiz for a given topic",
     tools = [],
     output_key = f"quiz_{count}",
