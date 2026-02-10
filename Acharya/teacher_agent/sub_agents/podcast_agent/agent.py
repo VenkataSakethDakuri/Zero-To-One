@@ -33,7 +33,7 @@ def podcast_agent_function() -> Agent:
 
     podcast_agent = Agent(
         name=f"podcast_agent_{count}",
-        model = "gemini-2.5-flash-lite",
+        model = "gemini-3",
         description="Generates podcast content for a given topic",
         tools=[],
         output_key=f"podcast_content_{count}",
