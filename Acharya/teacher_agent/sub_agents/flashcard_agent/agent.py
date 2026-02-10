@@ -27,7 +27,7 @@ def flashcard_agent_function() -> Agent:
 
     flashcard_agent = Agent(
     name = f"flashcard_agent_{count}",
-    model = "gemini-2.5-flash-lite",
+    model = "gemini-3",
     description = "Generates flashcards for a given topic",
     tools = [],
     output_key = f"flashcards_{count}",
