@@ -12,7 +12,7 @@ def image_agent_function() -> Agent:
 
     image_agent = Agent(
     name=f"image_agent_{count}",
-    model="gemini-2.5-flash-lite",
+    model="gemini-3",
     description="Generates images for a given topic",
     tools=[image_tool],
     output_key=f"image_url_{count}",
