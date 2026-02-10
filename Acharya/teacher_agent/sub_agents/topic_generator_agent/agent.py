@@ -20,7 +20,7 @@ class TopicGenerator(BaseModel):
 
 topic_generator_agent = Agent(
     name="topic_generator_agent",
-    model="gemini-2.5-flash-lite",  
+    model="gemini-3",  
     description="Analyzes topics and generates pedagogically sound subtopics for educational content creation",
     instruction=topic_generator_agent_instruction,
     tools=[],
